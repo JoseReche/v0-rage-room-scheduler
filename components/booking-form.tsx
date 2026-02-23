@@ -6,8 +6,9 @@ import { ptBR } from 'date-fns/locale'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Flame, Clock } from 'lucide-react'
+import { Flame, Clock, MessageCircle, DollarSign, Gift } from 'lucide-react'
 import { toast } from 'sonner'
+import { buildWhatsAppUrl, PAYMENT_TYPE_LABELS } from '@/lib/constants'
 
 type Booking = {
   id: string
@@ -17,6 +18,8 @@ type Booking = {
   customer_name: string
   customer_phone: string | null
   notes: string | null
+  status: 'pending' | 'approved' | 'rejected'
+  payment_type: 'free' | 'paid'
   created_at: string
 }
 
@@ -35,6 +38,7 @@ export function BookingForm({
   const [customerPhone, setCustomerPhone] = useState('')
   const [notes, setNotes] = useState('')
   const [selectedSlot, setSelectedSlot] = useState<'morning' | 'afternoon' | null>(null)
+  const [paymentType, setPaymentType] = useState<'free' | 'paid'>('free')
   const [isLoading, setIsLoading] = useState(false)
 
   const morningTaken = existingBookings.some((b) => b.time_slot === 'morning')
@@ -61,6 +65,7 @@ export function BookingForm({
           customer_name: customerName,
           customer_phone: customerPhone,
           notes,
+          payment_type: paymentType,
         }),
       })
 
@@ -69,11 +74,29 @@ export function BookingForm({
         throw new Error(err.error || 'Erro ao criar agendamento')
       }
 
-      toast.success('Agendamento criado com sucesso!')
+      const bookingDate = format(selectedDate, 'yyyy-MM-dd')
+      const whatsappUrl = buildWhatsAppUrl({
+        customer_name: customerName,
+        booking_date: bookingDate,
+        time_slot: selectedSlot,
+        payment_type: paymentType,
+        notes: notes || null,
+      })
+
+      toast.success(
+        paymentType === 'paid'
+          ? 'Agendamento criado! Aguardando aprovacao do administrador.'
+          : 'Agendamento criado com sucesso!'
+      )
+
+      // Open WhatsApp in a new tab
+      window.open(whatsappUrl, '_blank')
+
       setCustomerName('')
       setCustomerPhone('')
       setNotes('')
       setSelectedSlot(null)
+      setPaymentType('free')
       onBookingCreated()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Erro ao criar agendamento')
@@ -141,6 +164,47 @@ export function BookingForm({
             </div>
           </div>
 
+          <div>
+            <Label className="mb-2 block text-xs uppercase tracking-wider text-muted-foreground">
+              Tipo de Sessao
+            </Label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setPaymentType('free')}
+                className={`
+                  flex items-center justify-center gap-2 rounded-md border p-3 text-sm font-semibold transition-all
+                  ${paymentType === 'free'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-border bg-secondary text-foreground hover:border-primary/50'
+                  }
+                `}
+              >
+                <Gift className="h-4 w-4" />
+                {PAYMENT_TYPE_LABELS.free}
+              </button>
+              <button
+                type="button"
+                onClick={() => setPaymentType('paid')}
+                className={`
+                  flex items-center justify-center gap-2 rounded-md border p-3 text-sm font-semibold transition-all
+                  ${paymentType === 'paid'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-border bg-secondary text-foreground hover:border-primary/50'
+                  }
+                `}
+              >
+                <DollarSign className="h-4 w-4" />
+                {PAYMENT_TYPE_LABELS.paid}
+              </button>
+            </div>
+            {paymentType === 'paid' && (
+              <p className="mt-2 text-xs text-muted-foreground">
+                Agendamentos pagos precisam de aprovacao do administrador.
+              </p>
+            )}
+          </div>
+
           <div className="grid gap-2">
             <Label htmlFor="customer-name" className="text-xs uppercase tracking-wider text-muted-foreground">
               Nome do Cliente *
@@ -186,7 +250,14 @@ export function BookingForm({
             disabled={isLoading || !selectedSlot}
             className="mt-2 w-full bg-primary font-bold uppercase tracking-wider text-primary-foreground hover:bg-primary/90"
           >
-            {isLoading ? 'Agendando...' : 'Agendar Sessao'}
+            {isLoading ? (
+              'Agendando...'
+            ) : (
+              <span className="flex items-center gap-2">
+                <MessageCircle className="h-4 w-4" />
+                Agendar e Enviar WhatsApp
+              </span>
+            )}
           </Button>
         </form>
       )}

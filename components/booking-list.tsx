@@ -2,10 +2,12 @@
 
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { Trash2, User, Phone, Clock, FileText } from 'lucide-react'
+import { Trash2, User, Phone, Clock, FileText, CheckCircle2, XCircle, DollarSign, Gift, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
 import { useState } from 'react'
+import { ADMIN_EMAIL, STATUS_LABELS, PAYMENT_TYPE_LABELS } from '@/lib/constants'
 
 type Booking = {
   id: string
@@ -15,6 +17,8 @@ type Booking = {
   customer_name: string
   customer_phone: string | null
   notes: string | null
+  status: 'pending' | 'approved' | 'rejected'
+  payment_type: 'free' | 'paid'
   created_at: string
 }
 
@@ -22,6 +26,7 @@ type BookingListProps = {
   bookings: Booking[]
   selectedDate: Date
   currentUserId: string
+  currentUserEmail: string
   onBookingDeleted: () => void
 }
 
@@ -29,9 +34,12 @@ export function BookingList({
   bookings,
   selectedDate,
   currentUserId,
+  currentUserEmail,
   onBookingDeleted,
 }: BookingListProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [updatingId, setUpdatingId] = useState<string | null>(null)
+  const isAdmin = currentUserEmail === ADMIN_EMAIL
 
   const dateBookings = bookings.filter(
     (b) => b.booking_date === format(selectedDate, 'yyyy-MM-dd')
@@ -51,6 +59,27 @@ export function BookingList({
       toast.error(err instanceof Error ? err.message : 'Erro ao deletar')
     } finally {
       setDeletingId(null)
+    }
+  }
+
+  const handleUpdateStatus = async (id: string, status: 'approved' | 'rejected') => {
+    setUpdatingId(id)
+    try {
+      const res = await fetch(`/api/bookings/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      })
+      if (!res.ok) {
+        const err = await res.json()
+        throw new Error(err.error || 'Erro ao atualizar')
+      }
+      toast.success(status === 'approved' ? 'Agendamento aprovado!' : 'Agendamento rejeitado.')
+      onBookingDeleted()
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Erro ao atualizar')
+    } finally {
+      setUpdatingId(null)
     }
   }
 

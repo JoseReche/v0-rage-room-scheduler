@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json()
-  const { booking_date, time_slot, customer_name, customer_phone, notes } = body
+  const { booking_date, time_slot, customer_name, customer_phone, notes, payment_type } = body
 
   if (!booking_date || !time_slot || !customer_name) {
     return NextResponse.json(
@@ -50,6 +50,11 @@ export async function POST(request: NextRequest) {
       { status: 400 }
     )
   }
+
+  const validPaymentTypes = ['free', 'paid']
+  const finalPaymentType = validPaymentTypes.includes(payment_type) ? payment_type : 'free'
+  // Free bookings are auto-approved; paid bookings need admin approval
+  const status = finalPaymentType === 'free' ? 'approved' : 'pending'
 
   // Check how many bookings exist for this date
   const { data: existingBookings, error: checkError } = await supabase
@@ -85,6 +90,8 @@ export async function POST(request: NextRequest) {
       customer_name,
       customer_phone: customer_phone || null,
       notes: notes || null,
+      payment_type: finalPaymentType,
+      status,
     })
     .select()
     .single()
