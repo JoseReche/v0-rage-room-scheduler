@@ -16,12 +16,19 @@ type LandingInfo = {
 const fallbackInfo: LandingInfo = {
   title: 'Sala da Raiva Joinville',
   about_text: 'Nao e sobre quebrar objetos. E sobre liberar o que voce carrega.',
-  description: 'Explosao controlada de emocoes, com seguranca, estrutura profissional e atmosfera industrial.',
+  description:
+    'Explosao controlada de emocoes, com seguranca, estrutura profissional e atmosfera industrial.',
   price_per_item: 25,
   price_per_day: 150,
 }
 
-const individualReasons = ['Termino', 'Demissao', 'Divorcio', 'Aniversario', 'Frustracao acumulada']
+const individualReasons = [
+  'Termino',
+  'Demissao',
+  'Divorcio',
+  'Aniversario',
+  'Frustracao acumulada',
+]
 const corporateReasons = [
   'Team building',
   'Integracao de equipe',
@@ -59,7 +66,7 @@ export default function Home() {
         <div className="industrial-glow pointer-events-none absolute inset-0" />
         <div className="mx-auto grid max-w-6xl gap-10 px-4 py-20 sm:px-6 md:grid-cols-2 lg:px-8 lg:py-28">
           <div>
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-[#9f9a92]">Joinville · Sc</p>
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-[#9f9a92]">Joinville - SC</p>
             <h1 className="industrial-title text-5xl leading-[0.9] sm:text-7xl">
               Sala da
               <br />
