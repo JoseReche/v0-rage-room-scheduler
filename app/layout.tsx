@@ -9,7 +9,7 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: 'RAGE ROOM - Agendamentos',
-  description: 'Agende sua sessao na Rage Room. Libere sua raiva, quebre tudo!',
+  description: 'Agende sua sessao na Sala da Raiva Joinville. Libere sua raiva, quebre tudo!',
   generator: 'v0.app',
   icons: {
     icon: [

@@ -11,7 +11,10 @@ import { Edit2, Save, X, Loader2 } from 'lucide-react'
 type RoomInfo = {
   id: string | null
   title: string
+  about_text: string
   description: string
+  price_per_item: number
+  price_per_day: number
   price_per_session: number
   image_url: string | null
   updated_at: string
@@ -29,7 +32,11 @@ export function RoomInfoEditor({ isAdmin, onRoomUpdated }: RoomInfoEditorProps) 
   const [roomInfo, setRoomInfo] = useState<RoomInfo>({
     id: null,
     title: 'Sala da Raiva Joinville',
+    about_text:
+      'Uma Sala da Raiva (Rage Room) e um ambiente seguro para descarregar o estresse quebrando objetos com equipamentos de protecao e acompanhamento.',
     description: 'Bem-vindo à Sala da Raiva!',
+    price_per_item: 25.0,
+    price_per_day: 150.0,
     price_per_session: 150.0,
     image_url: null,
     updated_at: new Date().toISOString(),
@@ -69,8 +76,10 @@ export function RoomInfoEditor({ isAdmin, onRoomUpdated }: RoomInfoEditorProps) 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: formData.title,
+          about_text: formData.about_text,
           description: formData.description,
-          price_per_session: parseFloat(String(formData.price_per_session)),
+          price_per_item: parseFloat(String(formData.price_per_item)),
+          price_per_day: parseFloat(String(formData.price_per_day)),
           image_url: formData.image_url,
         }),
       })
@@ -141,6 +150,19 @@ export function RoomInfoEditor({ isAdmin, onRoomUpdated }: RoomInfoEditorProps) 
           </div>
 
           <div className="grid gap-2">
+            <Label htmlFor="about" className="text-xs uppercase tracking-wider text-muted-foreground">
+              O que e uma sala da raiva?
+            </Label>
+            <Textarea
+              id="about"
+              value={formData.about_text}
+              onChange={(e) => setFormData({ ...formData, about_text: e.target.value })}
+              className="min-h-24 bg-background"
+              placeholder="Explique a experiencia da sala da raiva..."
+            />
+          </div>
+
+          <div className="grid gap-2">
             <Label htmlFor="description" className="text-xs uppercase tracking-wider text-muted-foreground">
               Descricao
             </Label>
@@ -154,15 +176,30 @@ export function RoomInfoEditor({ isAdmin, onRoomUpdated }: RoomInfoEditorProps) 
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="price" className="text-xs uppercase tracking-wider text-muted-foreground">
-              Preco por Sessao (R$)
+            <Label htmlFor="price-item" className="text-xs uppercase tracking-wider text-muted-foreground">
+              Preco por Item (R$)
             </Label>
             <Input
-              id="price"
+              id="price-item"
               type="number"
               step="0.01"
-              value={formData.price_per_session}
-              onChange={(e) => setFormData({ ...formData, price_per_session: parseFloat(e.target.value) })}
+              value={formData.price_per_item}
+              onChange={(e) => setFormData({ ...formData, price_per_item: parseFloat(e.target.value) || 0 })}
+              className="bg-background"
+              placeholder="25.00"
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="price-day" className="text-xs uppercase tracking-wider text-muted-foreground">
+              Preco por Dia (R$)
+            </Label>
+            <Input
+              id="price-day"
+              type="number"
+              step="0.01"
+              value={formData.price_per_day}
+              onChange={(e) => setFormData({ ...formData, price_per_day: parseFloat(e.target.value) || 0 })}
               className="bg-background"
               placeholder="150.00"
             />
@@ -213,14 +250,31 @@ export function RoomInfoEditor({ isAdmin, onRoomUpdated }: RoomInfoEditorProps) 
       ) : (
         <div className="space-y-4">
           <p className="text-sm leading-relaxed text-foreground">
+            {roomInfo.about_text}
+          </p>
+          <p className="text-sm leading-relaxed text-foreground">
             {roomInfo.description}
           </p>
-          <div className="rounded-md border border-border bg-primary/10 p-4">
-            <p className="text-xs uppercase tracking-wider text-muted-foreground">Preco</p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="rounded-md border border-border bg-primary/10 p-4">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">Preco por Item</p>
+              <p className="text-3xl font-bold text-primary">
+                R$ {roomInfo.price_per_item.toFixed(2)}
+              </p>
+            </div>
+            <div className="rounded-md border border-border bg-primary/10 p-4">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">Preco por Dia</p>
+              <p className="text-3xl font-bold text-primary">
+                R$ {roomInfo.price_per_day.toFixed(2)}
+              </p>
+            </div>
+          </div>
+          <div className="rounded-md border border-border bg-primary/5 p-4">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">Referencia Interna</p>
             <p className="text-3xl font-bold text-primary">
-              R$ {roomInfo.price_per_session.toFixed(2)}
+              R$ {roomInfo.price_per_day.toFixed(2)}
             </p>
-            <p className="text-xs text-muted-foreground">por sessao</p>
+            <p className="text-xs text-muted-foreground">campo legado price_per_session</p>
           </div>
         </div>
       )}
