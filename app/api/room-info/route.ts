@@ -15,15 +15,27 @@ export async function GET() {
     return NextResponse.json({
       id: null,
       title: 'Sala da Raiva Joinville',
+      about_text:
+        'Uma Sala da Raiva (Rage Room) e um ambiente seguro para descarregar o estresse quebrando objetos com equipamentos de protecao e acompanhamento.',
       description:
         'Bem-vindo à Sala da Raiva! Venha liberar sua raiva num ambiente seguro e controlado.',
+      price_per_item: 25.0,
+      price_per_day: 150.0,
       price_per_session: 150.0,
       image_url: null,
       updated_at: new Date().toISOString(),
     })
   }
 
-  return NextResponse.json(data)
+  return NextResponse.json({
+    ...data,
+    about_text:
+      data.about_text ||
+      'Uma Sala da Raiva (Rage Room) e um ambiente seguro para descarregar o estresse quebrando objetos com equipamentos de protecao e acompanhamento.',
+    price_per_item: data.price_per_item ?? 25.0,
+    price_per_day: data.price_per_day ?? data.price_per_session ?? 150.0,
+    price_per_session: data.price_per_day ?? data.price_per_session ?? 150.0,
+  })
 }
 
 export async function PATCH(request: NextRequest) {
@@ -42,7 +54,7 @@ export async function PATCH(request: NextRequest) {
   }
 
   const body = await request.json()
-  const { title, description, price_per_session, image_url } = body
+  const { title, about_text, description, price_per_item, price_per_day, image_url } = body
 
   // Get or create room info
   const { data: existing } = await supabase
@@ -58,8 +70,11 @@ export async function PATCH(request: NextRequest) {
       .from('room_info')
       .update({
         title: title || undefined,
+        about_text: about_text || undefined,
         description: description || undefined,
-        price_per_session: price_per_session || undefined,
+        price_per_item: price_per_item || undefined,
+        price_per_day: price_per_day || undefined,
+        price_per_session: price_per_day || undefined,
         image_url: image_url || undefined,
         updated_at: new Date().toISOString(),
         updated_by: user.id,
@@ -73,10 +88,15 @@ export async function PATCH(request: NextRequest) {
       .from('room_info')
       .insert({
         title: title || 'Sala da Raiva Joinville',
+        about_text:
+          about_text ||
+          'Uma Sala da Raiva (Rage Room) e um ambiente seguro para descarregar o estresse quebrando objetos com equipamentos de protecao e acompanhamento.',
         description:
           description ||
           'Bem-vindo à Sala da Raiva! Venha liberar sua raiva num ambiente seguro e controlado.',
-        price_per_session: price_per_session || 150.0,
+        price_per_item: price_per_item || 25.0,
+        price_per_day: price_per_day || 150.0,
+        price_per_session: price_per_day || 150.0,
         image_url: image_url || null,
         updated_by: user.id,
       })
