@@ -56,7 +56,7 @@ export default function SignUpPage() {
             <Hammer className="h-8 w-8 text-primary" />
           </div>
           <h1 className="text-4xl font-black uppercase tracking-tighter text-foreground">
-            Rage Room
+            Sala da Raiva Joinville
           </h1>
           <p className="mt-2 text-sm uppercase tracking-widest text-muted-foreground">
             Quebre tudo. Libere sua raiva.

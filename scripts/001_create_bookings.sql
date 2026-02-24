@@ -1,4 +1,4 @@
--- Create bookings table for rage room sessions
+-- Create bookings table for Sala da Raiva Joinville sessions
 -- Max 2 bookings per day enforced by application logic + unique constraint
 
 CREATE TABLE IF NOT EXISTS public.bookings (

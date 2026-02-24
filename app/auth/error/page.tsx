@@ -16,7 +16,7 @@ export default async function AuthErrorPage({
             <Hammer className="h-8 w-8 text-primary" />
           </div>
           <h1 className="text-4xl font-black uppercase tracking-tighter text-foreground">
-            Rage Room
+            Sala da Raiva Joinville
           </h1>
         </div>
 
