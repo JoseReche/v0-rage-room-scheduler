@@ -7,8 +7,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
 export const metadata = {
-  title: 'Sala da Quebra Joinville | Agendamentos',
-  description: 'Conheça a Sala da Quebra Joinville e faça seu agendamento.',
+  title: 'Sala da Raiva Joinville | Agendamentos',
+  description: 'Conheça a Sala da Raiva Joinville e faça seu agendamento.',
 }
 
 export default async function RoomPage() {

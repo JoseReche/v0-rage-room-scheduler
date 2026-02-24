@@ -28,8 +28,8 @@ export function RoomInfoEditor({ isAdmin, onRoomUpdated }: RoomInfoEditorProps) 
   const [isFetching, setIsFetching] = useState(true)
   const [roomInfo, setRoomInfo] = useState<RoomInfo>({
     id: null,
-    title: 'Sala da Quebra Joinville',
-    description: 'Bem-vindo à Sala da Quebra!',
+    title: 'Sala da Raiva Joinville',
+    description: 'Bem-vindo à Sala da Raiva!',
     price_per_session: 150.0,
     image_url: null,
     updated_at: new Date().toISOString(),
