@@ -31,7 +31,7 @@ export function buildWhatsAppUrl(booking: {
   const slotLabel = TIME_SLOT_LABELS[booking.time_slot] || booking.time_slot
   const paymentLabel = PAYMENT_TYPE_LABELS[booking.payment_type] || booking.payment_type
 
-  let message = `*Nova Solicitacao de Agendamento - Rage Room*\n\n`
+  let message = `*Nova Solicitacao de Agendamento - Sala da Raiva Joinville*\n\n`
   message += `*Cliente:* ${booking.customer_name}\n`
   message += `*Data:* ${formattedDate}\n`
   message += `*Horario:* ${slotLabel}\n`

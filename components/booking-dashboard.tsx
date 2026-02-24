@@ -74,7 +74,7 @@ export function BookingDashboard({ userId, userEmail }: BookingDashboardProps) {
             </div>
             <div>
               <h1 className="text-lg font-black uppercase tracking-tighter text-foreground md:text-xl">
-                Rage Room
+                Sala da Raiva Joinville
               </h1>
               <p className="hidden text-xs uppercase tracking-widest text-muted-foreground md:block">
                 Painel de Agendamentos
