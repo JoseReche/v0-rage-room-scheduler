@@ -6,7 +6,10 @@ import { Loader2, Calendar } from 'lucide-react'
 type RoomInfo = {
   id: string | null
   title: string
+  about_text: string
   description: string
+  price_per_item: number
+  price_per_day: number
   price_per_session: number
   image_url: string | null
   updated_at: string
@@ -29,7 +32,10 @@ export function RoomDisplay() {
         setRoomInfo({
           id: null,
           title: 'Sala da Raiva Joinville',
+          about_text: 'Uma Sala da Raiva (Rage Room) e um ambiente seguro para descarregar o estresse quebrando objetos com equipamentos de protecao e acompanhamento.',
           description: 'Bem-vindo à Sala da Raiva!',
+          price_per_item: 25.0,
+          price_per_day: 150.0,
           price_per_session: 150.0,
           image_url: null,
           updated_at: new Date().toISOString(),
@@ -70,17 +76,29 @@ export function RoomDisplay() {
           <h1 className="mb-3 text-3xl sm:text-4xl font-bold uppercase tracking-widest text-foreground">
             {roomInfo.title}
           </h1>
+          <p className="mb-3 text-base leading-relaxed text-foreground sm:text-lg">
+            {roomInfo.about_text}
+          </p>
           <p className="mb-6 text-base leading-relaxed text-foreground sm:text-lg">
             {roomInfo.description}
           </p>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-3">
             <div className="rounded-md border border-border bg-primary/10 p-4">
               <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">
-                Preco por Sessao
+                Valor por Item
               </p>
               <p className="text-3xl font-bold text-primary">
-                R$ {roomInfo.price_per_session.toFixed(2)}
+                R$ {roomInfo.price_per_item.toFixed(2)}
+              </p>
+            </div>
+
+            <div className="rounded-md border border-border bg-primary/10 p-4">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">
+                Valor por Dia
+              </p>
+              <p className="text-3xl font-bold text-primary">
+                R$ {roomInfo.price_per_day.toFixed(2)}
               </p>
             </div>
 

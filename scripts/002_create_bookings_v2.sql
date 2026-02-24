@@ -1,4 +1,4 @@
--- Create bookings table for rage room sessions
+-- Create bookings table for Sala da Raiva Joinville sessions
 CREATE TABLE IF NOT EXISTS public.bookings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,

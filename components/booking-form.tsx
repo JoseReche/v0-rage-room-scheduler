@@ -6,9 +6,9 @@ import { ptBR } from 'date-fns/locale'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Flame, Clock, MessageCircle, DollarSign, Gift } from 'lucide-react'
+import { Flame, Clock, MessageCircle, DollarSign } from 'lucide-react'
 import { toast } from 'sonner'
-import { buildWhatsAppUrl, PAYMENT_TYPE_LABELS } from '@/lib/constants'
+import { buildWhatsAppUrl } from '@/lib/constants'
 
 type Booking = {
   id: string
@@ -19,7 +19,7 @@ type Booking = {
   customer_phone: string | null
   notes: string | null
   status: 'pending' | 'approved' | 'rejected'
-  payment_type: 'free' | 'paid'
+  payment_type: 'paid' | 'free'
   created_at: string
 }
 
@@ -38,7 +38,7 @@ export function BookingForm({
   const [customerPhone, setCustomerPhone] = useState('')
   const [notes, setNotes] = useState('')
   const [selectedSlot, setSelectedSlot] = useState<'morning' | 'afternoon' | null>(null)
-  const [paymentType, setPaymentType] = useState<'free' | 'paid'>('free')
+  const paymentType: 'paid' = 'paid'
   const [isLoading, setIsLoading] = useState(false)
 
   const morningTaken = existingBookings.some((b) => b.time_slot === 'morning')
@@ -83,11 +83,7 @@ export function BookingForm({
         notes: notes || null,
       })
 
-      toast.success(
-        paymentType === 'paid'
-          ? 'Agendamento criado! Aguardando aprovacao do administrador.'
-          : 'Agendamento criado com sucesso!'
-      )
+      toast.success('Agendamento criado! Aguardando aprovacao do administrador.')
 
       // Open WhatsApp in a new tab
       window.open(whatsappUrl, '_blank')
@@ -96,7 +92,6 @@ export function BookingForm({
       setCustomerPhone('')
       setNotes('')
       setSelectedSlot(null)
-      setPaymentType('free')
       onBookingCreated()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Erro ao criar agendamento')
@@ -164,45 +159,12 @@ export function BookingForm({
             </div>
           </div>
 
-          <div>
-            <Label className="mb-2 block text-xs uppercase tracking-wider text-muted-foreground">
-              Tipo de Sessao
-            </Label>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => setPaymentType('free')}
-                className={`
-                  flex items-center justify-center gap-2 rounded-md border p-3 text-sm font-semibold transition-all
-                  ${paymentType === 'free'
-                    ? 'border-primary bg-primary/10 text-primary'
-                    : 'border-border bg-secondary text-foreground hover:border-primary/50'
-                  }
-                `}
-              >
-                <Gift className="h-4 w-4" />
-                {PAYMENT_TYPE_LABELS.free}
-              </button>
-              <button
-                type="button"
-                onClick={() => setPaymentType('paid')}
-                className={`
-                  flex items-center justify-center gap-2 rounded-md border p-3 text-sm font-semibold transition-all
-                  ${paymentType === 'paid'
-                    ? 'border-primary bg-primary/10 text-primary'
-                    : 'border-border bg-secondary text-foreground hover:border-primary/50'
-                  }
-                `}
-              >
-                <DollarSign className="h-4 w-4" />
-                {PAYMENT_TYPE_LABELS.paid}
-              </button>
-            </div>
-            {paymentType === 'paid' && (
-              <p className="mt-2 text-xs text-muted-foreground">
-                Agendamentos pagos precisam de aprovacao do administrador.
-              </p>
-            )}
+          <div className="rounded-md border border-border bg-primary/10 p-3">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">Tipo de Sessao</p>
+            <p className="mt-1 flex items-center gap-2 text-sm font-semibold text-primary">
+              <DollarSign className="h-4 w-4" />
+              Sessao Paga (aprovacao do administrador)
+            </p>
           </div>
 
           <div className="grid gap-2">
