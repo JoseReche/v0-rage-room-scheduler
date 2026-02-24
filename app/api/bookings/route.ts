@@ -12,13 +12,21 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const month = searchParams.get('month')
   const year = searchParams.get('year')
+  const allParam = searchParams.get('all')
 
   let query = supabase
     .from('bookings')
     .select('*')
     .order('booking_date', { ascending: true })
 
-  if (month && year) {
+  // If all=true and user is admin, return all bookings
+  if (allParam === 'true') {
+    const { ADMIN_EMAIL } = await import('@/lib/constants')
+    if (user.email !== ADMIN_EMAIL) {
+      return NextResponse.json({ error: 'Acesso negado' }, { status: 403 })
+    }
+    // Return all bookings for admin
+  } else if (month && year) {
     const startDate = `${year}-${month.padStart(2, '0')}-01`
     const endDate = new Date(Number(year), Number(month), 0).toISOString().split('T')[0]
     query = query.gte('booking_date', startDate).lte('booking_date', endDate)

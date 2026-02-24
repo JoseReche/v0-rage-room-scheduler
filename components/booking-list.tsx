@@ -100,14 +100,62 @@ export function BookingList({
               key={booking.id}
               className="rounded-md border border-border bg-secondary/50 p-4"
             >
-              <div className="flex items-start justify-between">
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-3.5 w-3.5 text-primary" />
-                    <span className="text-xs font-bold uppercase tracking-wider text-primary">
-                      {booking.time_slot === 'morning' ? 'Manha' : 'Tarde'}
-                    </span>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <div className="mb-2 flex flex-wrap items-center gap-2">
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-3.5 w-3.5 text-primary" />
+                      <span className="text-xs font-bold uppercase tracking-wider text-primary">
+                        {booking.time_slot === 'morning' ? 'Manha' : 'Tarde'}
+                      </span>
+                    </div>
+                    <Badge
+                      variant={booking.payment_type === 'paid' ? 'default' : 'secondary'}
+                      className="text-xs"
+                    >
+                      {booking.payment_type === 'paid' ? (
+                        <>
+                          <DollarSign className="h-3 w-3 mr-1" />
+                          {PAYMENT_TYPE_LABELS.paid}
+                        </>
+                      ) : (
+                        <>
+                          <Gift className="h-3 w-3 mr-1" />
+                          {PAYMENT_TYPE_LABELS.free}
+                        </>
+                      )}
+                    </Badge>
+                    <Badge
+                      variant={
+                        booking.status === 'approved'
+                          ? 'default'
+                          : booking.status === 'rejected'
+                            ? 'destructive'
+                            : 'secondary'
+                      }
+                      className="text-xs"
+                    >
+                      {booking.status === 'approved' && (
+                        <>
+                          <CheckCircle2 className="h-3 w-3 mr-1" />
+                          {STATUS_LABELS.approved}
+                        </>
+                      )}
+                      {booking.status === 'pending' && (
+                        <>
+                          <Clock className="h-3 w-3 mr-1" />
+                          {STATUS_LABELS.pending}
+                        </>
+                      )}
+                      {booking.status === 'rejected' && (
+                        <>
+                          <XCircle className="h-3 w-3 mr-1" />
+                          {STATUS_LABELS.rejected}
+                        </>
+                      )}
+                    </Badge>
                   </div>
+
                   <div className="flex items-center gap-2">
                     <User className="h-3.5 w-3.5 text-muted-foreground" />
                     <span className="text-sm font-semibold text-foreground">
@@ -131,18 +179,45 @@ export function BookingList({
                     </div>
                   )}
                 </div>
-                {booking.user_id === currentUserId && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDelete(booking.id)}
-                    disabled={deletingId === booking.id}
-                    className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                    <span className="sr-only">Remover agendamento</span>
-                  </Button>
-                )}
+
+                <div className="flex flex-col gap-2">
+                  {isAdmin && booking.status === 'pending' && booking.payment_type === 'paid' && (
+                    <>
+                      <Button
+                        size="sm"
+                        variant="default"
+                        onClick={() => handleUpdateStatus(booking.id, 'approved')}
+                        disabled={updatingId === booking.id}
+                        className="h-8 text-xs"
+                      >
+                        <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
+                        Aprovar
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleUpdateStatus(booking.id, 'rejected')}
+                        disabled={updatingId === booking.id}
+                        className="h-8 text-xs"
+                      >
+                        <XCircle className="h-3.5 w-3.5 mr-1" />
+                        Rejeitar
+                      </Button>
+                    </>
+                  )}
+
+                  {(booking.user_id === currentUserId || isAdmin) && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDelete(booking.id)}
+                      disabled={deletingId === booking.id}
+                      className="h-8 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           ))}

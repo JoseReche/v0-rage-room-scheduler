@@ -6,10 +6,12 @@ import useSWR from 'swr'
 import { BookingCalendar } from '@/components/booking-calendar'
 import { BookingForm } from '@/components/booking-form'
 import { BookingList } from '@/components/booking-list'
-import { Hammer, LogOut, CalendarDays } from 'lucide-react'
+import { Hammer, LogOut, CalendarDays, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { ADMIN_EMAIL } from '@/lib/constants'
 
 type Booking = {
   id: string
@@ -19,6 +21,8 @@ type Booking = {
   customer_name: string
   customer_phone: string | null
   notes: string | null
+  status: 'pending' | 'approved' | 'rejected'
+  payment_type: 'free' | 'paid'
   created_at: string
 }
 
@@ -81,6 +85,18 @@ export function BookingDashboard({ userId, userEmail }: BookingDashboardProps) {
             <span className="hidden text-sm text-muted-foreground md:inline">
               {userEmail}
             </span>
+            {userEmail === ADMIN_EMAIL && (
+              <Link href="/admin">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <ShieldCheck className="mr-2 h-4 w-4" />
+                  Painel Admin
+                </Button>
+              </Link>
+            )}
             <Button
               variant="ghost"
               size="sm"
@@ -129,6 +145,7 @@ export function BookingDashboard({ userId, userEmail }: BookingDashboardProps) {
                     bookings={bookings}
                     selectedDate={selectedDate}
                     currentUserId={userId}
+                    currentUserEmail={userEmail}
                     onBookingDeleted={handleBookingChange}
                   />
                 </div>
