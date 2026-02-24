@@ -19,12 +19,13 @@ import {
 import { ptBR } from 'date-fns/locale'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { AVAILABLE_TIME_SLOTS, type TimeSlot } from '@/lib/constants'
 
 type Booking = {
   id: string
   user_id: string
   booking_date: string
-  time_slot: 'morning' | 'afternoon'
+  time_slot: TimeSlot
   customer_name: string
   customer_phone: string | null
   notes: string | null
@@ -101,7 +102,7 @@ export function BookingCalendar({
           const isSelected = selectedDate && isSameDay(day, selectedDate)
           const isCurrentMonth = isSameMonth(day, currentMonth)
           const isPast = isBefore(startOfDay(day), startOfDay(new Date()))
-          const isFull = dayBookings.length >= 2
+          const isFull = dayBookings.length >= AVAILABLE_TIME_SLOTS.length
 
           return (
             <button

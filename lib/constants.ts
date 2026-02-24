@@ -3,9 +3,16 @@ export const ADMIN_EMAIL = 'jose.carlosreche@gmail.com'
 // WhatsApp number in international format (no spaces, no dashes, no +)
 export const WHATSAPP_NUMBER = '5547991621578'
 
-export const TIME_SLOT_LABELS: Record<string, string> = {
-  morning: 'Manha (09:00 - 12:00)',
-  afternoon: 'Tarde (14:00 - 18:00)',
+export const AVAILABLE_TIME_SLOTS = ['16:00', '17:00', '18:00', '19:00', '20:00', '21:00'] as const
+export type TimeSlot = (typeof AVAILABLE_TIME_SLOTS)[number]
+
+export const TIME_SLOT_LABELS: Record<TimeSlot, string> = {
+  '16:00': '16:00',
+  '17:00': '17:00',
+  '18:00': '18:00',
+  '19:00': '19:00',
+  '20:00': '20:00',
+  '21:00': '21:00',
 }
 
 export const STATUS_LABELS: Record<string, string> = {
@@ -22,7 +29,7 @@ export const PAYMENT_TYPE_LABELS: Record<string, string> = {
 export function buildWhatsAppUrl(booking: {
   customer_name: string
   booking_date: string
-  time_slot: string
+  time_slot: TimeSlot
   payment_type: string
   notes?: string | null
 }) {

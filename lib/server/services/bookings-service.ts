@@ -1,3 +1,4 @@
+import { AVAILABLE_TIME_SLOTS, TIME_SLOT_LABELS, type TimeSlot } from '@/lib/constants'
 import { buildBookingsQuery, createBookingRecord, findBookingsByDate } from '@/lib/server/repositories/bookings-repository'
 import type { SupabaseClient, User } from '@supabase/supabase-js'
 
@@ -28,7 +29,7 @@ export async function createBooking(
   user: User,
   booking: {
     booking_date: string
-    time_slot: 'morning' | 'afternoon'
+    time_slot: TimeSlot
     customer_name: string
     customer_phone?: string
     notes?: string
@@ -43,14 +44,14 @@ export async function createBooking(
     return { error: checkError.message, status: 500 as const }
   }
 
-  if (existingBookings && existingBookings.length >= 2) {
-    return { error: 'Este dia ja tem o maximo de 2 agendamentos', status: 409 as const }
+  if (existingBookings && existingBookings.length >= AVAILABLE_TIME_SLOTS.length) {
+    return { error: `Este dia ja tem o maximo de ${AVAILABLE_TIME_SLOTS.length} agendamentos`, status: 409 as const }
   }
 
   const slotTaken = existingBookings?.some((b) => b.time_slot === booking.time_slot)
   if (slotTaken) {
     return {
-      error: `O horario "${booking.time_slot === 'morning' ? 'Manha' : 'Tarde'}" ja esta reservado neste dia`,
+      error: `O horario "${TIME_SLOT_LABELS[booking.time_slot]}" ja esta reservado neste dia`,
       status: 409 as const,
     }
   }

@@ -1,3 +1,4 @@
+import { AVAILABLE_TIME_SLOTS, type TimeSlot } from '@/lib/constants'
 import { listBookings, createBooking } from '@/lib/server/services/bookings-service'
 import { getAuthenticatedContext } from '@/lib/server/auth'
 import { NextRequest, NextResponse } from 'next/server'
@@ -50,9 +51,16 @@ export async function POST(request: NextRequest) {
     )
   }
 
+  if (!AVAILABLE_TIME_SLOTS.includes(time_slot as TimeSlot)) {
+    return NextResponse.json(
+      { error: 'Horario invalido. Escolha entre os horarios disponiveis a partir das 16h.' },
+      { status: 400 }
+    )
+  }
+
   const result = await createBooking(supabase, user, {
     booking_date,
-    time_slot,
+    time_slot: time_slot as TimeSlot,
     customer_name,
     customer_phone,
     notes,

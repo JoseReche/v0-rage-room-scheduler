@@ -18,13 +18,13 @@ import {
   Loader2,
   CalendarDays,
 } from 'lucide-react'
-import { STATUS_LABELS, PAYMENT_TYPE_LABELS } from '@/lib/constants'
+import { STATUS_LABELS, PAYMENT_TYPE_LABELS, TIME_SLOT_LABELS, type TimeSlot } from '@/lib/constants'
 
 type Booking = {
   id: string
   user_id: string
   booking_date: string
-  time_slot: 'morning' | 'afternoon'
+  time_slot: TimeSlot
   customer_name: string
   customer_phone: string | null
   notes: string | null
@@ -179,7 +179,7 @@ export function AdminBookingsManager({ isAdmin }: AdminBookingsManagerProps) {
                     </Badge>
 
                     <span className="text-xs font-semibold uppercase tracking-widest text-primary">
-                      {booking.time_slot === 'morning' ? 'Manha (09:00-12:00)' : 'Tarde (14:00-18:00)'}
+                      {TIME_SLOT_LABELS[booking.time_slot]}
                     </span>
                   </div>
 

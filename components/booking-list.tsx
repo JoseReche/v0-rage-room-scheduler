@@ -7,13 +7,13 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
 import { useState } from 'react'
-import { ADMIN_EMAIL, STATUS_LABELS, PAYMENT_TYPE_LABELS } from '@/lib/constants'
+import { ADMIN_EMAIL, STATUS_LABELS, PAYMENT_TYPE_LABELS, TIME_SLOT_LABELS, type TimeSlot, AVAILABLE_TIME_SLOTS } from '@/lib/constants'
 
 type Booking = {
   id: string
   user_id: string
   booking_date: string
-  time_slot: 'morning' | 'afternoon'
+  time_slot: TimeSlot
   customer_name: string
   customer_phone: string | null
   notes: string | null
@@ -86,7 +86,7 @@ export function BookingList({
                     <div className="flex items-center gap-2">
                       <Clock className="h-3.5 w-3.5 text-primary" />
                       <span className="text-xs font-bold uppercase tracking-wider text-primary">
-                        {booking.time_slot === 'morning' ? 'Manha' : 'Tarde'}
+                        {TIME_SLOT_LABELS[booking.time_slot]}
                       </span>
                     </div>
                     <Badge
@@ -193,7 +193,7 @@ export function BookingList({
       )}
 
       <div className="mt-3 text-right text-xs text-muted-foreground">
-        {dateBookings.length}/2 agendamentos
+        {dateBookings.length}/{AVAILABLE_TIME_SLOTS.length} agendamentos
       </div>
     </div>
   )

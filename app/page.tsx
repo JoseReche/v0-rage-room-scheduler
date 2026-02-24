@@ -44,16 +44,16 @@ const flowSteps = [
 
 const actionPhotos = [
   {
-    src: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1400&q=80',
-    alt: 'Pessoa quebrando objetos com marreta em uma sala de destruição',
+    src: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1400&q=80',
+    alt: 'Pessoa com equipamento de proteção quebrando objetos em ambiente controlado',
   },
   {
-    src: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1400&q=80',
-    alt: 'Grupo usando equipamentos de segurança em ambiente industrial',
+    src: 'https://images.unsplash.com/photo-1517438476312-10d79c077509?auto=format&fit=crop&w=1400&q=80',
+    alt: 'Participante usando luvas e capacete antes de quebrar materiais na sala',
   },
   {
-    src: 'https://images.unsplash.com/photo-1599058917765-a780eda07a3e?auto=format&fit=crop&w=1400&q=80',
-    alt: 'Pessoa em momento de impacto quebrando objeto para aliviar estresse',
+    src: 'https://images.unsplash.com/photo-1609710228159-0fa9bd7c0827?auto=format&fit=crop&w=1400&q=80',
+    alt: 'Momento de impacto com marreta em sessão de rage room supervisionada',
   },
 ]
 

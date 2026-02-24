@@ -1,3 +1,4 @@
+import type { TimeSlot } from '@/lib/constants'
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 export type BookingStatus = 'pending' | 'approved' | 'rejected'
@@ -18,7 +19,7 @@ export async function createBookingRecord(
   booking: {
     user_id: string
     booking_date: string
-    time_slot: 'morning' | 'afternoon'
+    time_slot: TimeSlot
     customer_name: string
     customer_phone: string | null
     notes: string | null

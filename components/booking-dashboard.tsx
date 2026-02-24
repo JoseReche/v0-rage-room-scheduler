@@ -11,13 +11,13 @@ import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ADMIN_EMAIL } from '@/lib/constants'
+import { ADMIN_EMAIL, type TimeSlot } from '@/lib/constants'
 
 type Booking = {
   id: string
   user_id: string
   booking_date: string
-  time_slot: 'morning' | 'afternoon'
+  time_slot: TimeSlot
   customer_name: string
   customer_phone: string | null
   notes: string | null

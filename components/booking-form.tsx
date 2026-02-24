@@ -8,13 +8,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Flame, Clock, MessageCircle, DollarSign } from 'lucide-react'
 import { toast } from 'sonner'
-import { buildWhatsAppUrl } from '@/lib/constants'
+import { AVAILABLE_TIME_SLOTS, buildWhatsAppUrl, TIME_SLOT_LABELS, type TimeSlot } from '@/lib/constants'
 
 type Booking = {
   id: string
   user_id: string
   booking_date: string
-  time_slot: 'morning' | 'afternoon'
+  time_slot: TimeSlot
   customer_name: string
   customer_phone: string | null
   notes: string | null
@@ -37,13 +37,12 @@ export function BookingForm({
   const [customerName, setCustomerName] = useState('')
   const [customerPhone, setCustomerPhone] = useState('')
   const [notes, setNotes] = useState('')
-  const [selectedSlot, setSelectedSlot] = useState<'morning' | 'afternoon' | null>(null)
+  const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null)
   const paymentType: 'paid' = 'paid'
   const [isLoading, setIsLoading] = useState(false)
 
-  const morningTaken = existingBookings.some((b) => b.time_slot === 'morning')
-  const afternoonTaken = existingBookings.some((b) => b.time_slot === 'afternoon')
-  const isFull = morningTaken && afternoonTaken
+  const takenSlots = new Set(existingBookings.map((b) => b.time_slot))
+  const isFull = takenSlots.size >= AVAILABLE_TIME_SLOTS.length
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -84,8 +83,6 @@ export function BookingForm({
       })
 
       toast.success('Agendamento criado! Aguardando aprovacao do administrador.')
-
-      // Open WhatsApp in a new tab
       window.open(whatsappUrl, '_blank')
 
       setCustomerName('')
@@ -112,50 +109,40 @@ export function BookingForm({
       {isFull ? (
         <div className="rounded-md border border-destructive/50 bg-destructive/10 p-4 text-center">
           <p className="text-sm font-semibold text-destructive">
-            Este dia ja esta lotado (2/2 agendamentos)
+            Este dia ja esta lotado ({AVAILABLE_TIME_SLOTS.length}/{AVAILABLE_TIME_SLOTS.length} agendamentos)
           </p>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
             <Label className="mb-2 block text-xs uppercase tracking-wider text-muted-foreground">
-              Horario
+              Horario (a partir das 16h)
             </Label>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                disabled={morningTaken}
-                onClick={() => setSelectedSlot('morning')}
-                className={`
-                  flex items-center justify-center gap-2 rounded-md border p-3 text-sm font-semibold transition-all
-                  ${morningTaken
-                    ? 'border-border bg-muted text-muted-foreground cursor-not-allowed line-through'
-                    : selectedSlot === 'morning'
-                      ? 'border-primary bg-primary/10 text-primary'
-                      : 'border-border bg-secondary text-foreground hover:border-primary/50'
-                  }
-                `}
-              >
-                <Clock className="h-4 w-4" />
-                Manha
-              </button>
-              <button
-                type="button"
-                disabled={afternoonTaken}
-                onClick={() => setSelectedSlot('afternoon')}
-                className={`
-                  flex items-center justify-center gap-2 rounded-md border p-3 text-sm font-semibold transition-all
-                  ${afternoonTaken
-                    ? 'border-border bg-muted text-muted-foreground cursor-not-allowed line-through'
-                    : selectedSlot === 'afternoon'
-                      ? 'border-primary bg-primary/10 text-primary'
-                      : 'border-border bg-secondary text-foreground hover:border-primary/50'
-                  }
-                `}
-              >
-                <Clock className="h-4 w-4" />
-                Tarde
-              </button>
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+              {AVAILABLE_TIME_SLOTS.map((slot) => {
+                const isTaken = takenSlots.has(slot)
+
+                return (
+                  <button
+                    key={slot}
+                    type="button"
+                    disabled={isTaken}
+                    onClick={() => setSelectedSlot(slot)}
+                    className={`
+                      flex items-center justify-center gap-2 rounded-md border p-3 text-sm font-semibold transition-all
+                      ${isTaken
+                        ? 'border-border bg-muted text-muted-foreground cursor-not-allowed line-through'
+                        : selectedSlot === slot
+                          ? 'border-primary bg-primary/10 text-primary'
+                          : 'border-border bg-secondary text-foreground hover:border-primary/50'
+                      }
+                    `}
+                  >
+                    <Clock className="h-4 w-4" />
+                    {TIME_SLOT_LABELS[slot]}
+                  </button>
+                )
+              })}
             </div>
           </div>
 
