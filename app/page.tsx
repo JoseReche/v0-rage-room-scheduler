@@ -42,6 +42,21 @@ const flowSteps = [
   'Saia leve',
 ]
 
+const actionPhotos = [
+  {
+    src: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1400&q=80',
+    alt: 'Pessoa quebrando objetos com marreta em uma sala de destruição',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1400&q=80',
+    alt: 'Grupo usando equipamentos de segurança em ambiente industrial',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1599058917765-a780eda07a3e?auto=format&fit=crop&w=1400&q=80',
+    alt: 'Pessoa em momento de impacto quebrando objeto para aliviar estresse',
+  },
+]
+
 export default function Home() {
   return (
     <main className="industrial-bg text-[#f0ece5]">
@@ -99,6 +114,26 @@ export default function Home() {
             Nao e sobre quebrar objetos. <br />E sobre liberar o que voce carrega.
           </h2>
           <div className="metal-divider mx-auto mt-8 w-full max-w-xl" />
+        </div>
+      </section>
+
+      <section className="border-b border-[#2a2a2a] bg-[#101010]">
+        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#9f998d]">A energia da experiencia</p>
+          <h2 className="industrial-title mt-4 text-3xl sm:text-4xl">Veja a Sala da Raiva em acao</h2>
+
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {actionPhotos.map((photo) => (
+              <article key={photo.src} className="overflow-hidden border border-[#3a3128] bg-[#141414]">
+                <img
+                  src={photo.src}
+                  alt={photo.alt}
+                  loading="lazy"
+                  className="h-64 w-full object-cover transition-transform duration-300 hover:scale-105"
+                />
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
