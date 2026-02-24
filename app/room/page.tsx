@@ -42,7 +42,7 @@ export default async function RoomPage() {
 
         {/* Booking Section */}
         <section>
-          <BookingDashboard userId={user.id} userEmail={user.email || ''} />
+          <BookingDashboard userEmail={user.email || ''} />
         </section>
       </div>
     </main>

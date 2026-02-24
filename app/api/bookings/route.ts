@@ -1,9 +1,10 @@
-import { createClient } from '@/lib/supabase/server'
+import { AVAILABLE_TIME_SLOTS, type TimeSlot } from '@/lib/constants'
+import { listBookings, createBooking } from '@/lib/server/services/bookings-service'
+import { getAuthenticatedContext } from '@/lib/server/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const { supabase, user, isAdmin } = await getAuthenticatedContext()
 
   if (!user) {
     return NextResponse.json({ error: 'Nao autorizado' }, { status: 401 })
@@ -14,25 +15,17 @@ export async function GET(request: NextRequest) {
   const year = searchParams.get('year')
   const allParam = searchParams.get('all')
 
-  let query = supabase
-    .from('bookings')
-    .select('*')
-    .order('booking_date', { ascending: true })
-
-  // If all=true and user is admin, return all bookings
   if (allParam === 'true') {
-    const { ADMIN_EMAIL } = await import('@/lib/constants')
-    if (user.email !== ADMIN_EMAIL) {
+    if (!isAdmin) {
       return NextResponse.json({ error: 'Acesso negado' }, { status: 403 })
     }
-    // Return all bookings for admin
-  } else if (month && year) {
-    const startDate = `${year}-${month.padStart(2, '0')}-01`
-    const endDate = new Date(Number(year), Number(month), 0).toISOString().split('T')[0]
-    query = query.gte('booking_date', startDate).lte('booking_date', endDate)
   }
 
-  const { data, error } = await query
+  const { data, error } = await listBookings(supabase, {
+    all: allParam === 'true',
+    month,
+    year,
+  })
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
@@ -42,8 +35,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const { supabase, user } = await getAuthenticatedContext()
 
   if (!user) {
     return NextResponse.json({ error: 'Nao autorizado' }, { status: 401 })
@@ -59,52 +51,24 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const finalPaymentType = 'paid'
-  const status = 'pending'
-
-  // Check how many bookings exist for this date
-  const { data: existingBookings, error: checkError } = await supabase
-    .from('bookings')
-    .select('id, time_slot')
-    .eq('booking_date', booking_date)
-
-  if (checkError) {
-    return NextResponse.json({ error: checkError.message }, { status: 500 })
-  }
-
-  if (existingBookings && existingBookings.length >= 2) {
+  if (!AVAILABLE_TIME_SLOTS.includes(time_slot as TimeSlot)) {
     return NextResponse.json(
-      { error: 'Este dia ja tem o maximo de 2 agendamentos' },
-      { status: 409 }
+      { error: 'Horario invalido. Escolha entre os horarios disponiveis a partir das 16h.' },
+      { status: 400 }
     )
   }
 
-  const slotTaken = existingBookings?.some(b => b.time_slot === time_slot)
-  if (slotTaken) {
-    return NextResponse.json(
-      { error: `O horario "${time_slot === 'morning' ? 'Manha' : 'Tarde'}" ja esta reservado neste dia` },
-      { status: 409 }
-    )
+  const result = await createBooking(supabase, user, {
+    booking_date,
+    time_slot: time_slot as TimeSlot,
+    customer_name,
+    customer_phone,
+    notes,
+  })
+
+  if ('error' in result) {
+    return NextResponse.json({ error: result.error }, { status: result.status })
   }
 
-  const { data, error } = await supabase
-    .from('bookings')
-    .insert({
-      user_id: user.id,
-      booking_date,
-      time_slot,
-      customer_name,
-      customer_phone: customer_phone || null,
-      notes: notes || null,
-      payment_type: finalPaymentType,
-      status,
-    })
-    .select()
-    .single()
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
-  }
-
-  return NextResponse.json(data, { status: 201 })
+  return NextResponse.json(result.data, { status: 201 })
 }

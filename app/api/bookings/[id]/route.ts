@@ -1,19 +1,18 @@
-import { createClient } from '@/lib/supabase/server'
-import { ADMIN_EMAIL } from '@/lib/constants'
+import { getAuthenticatedContext } from '@/lib/server/auth'
+import { deleteBookingRecord, updateBookingStatusRecord } from '@/lib/server/repositories/bookings-repository'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const { supabase, user, isAdmin } = await getAuthenticatedContext()
 
   if (!user) {
     return NextResponse.json({ error: 'Nao autorizado' }, { status: 401 })
   }
 
-  if (user.email !== ADMIN_EMAIL) {
+  if (!isAdmin) {
     return NextResponse.json({ error: 'Apenas o administrador pode aprovar/rejeitar agendamentos' }, { status: 403 })
   }
 
@@ -25,12 +24,7 @@ export async function PATCH(
     return NextResponse.json({ error: 'Status invalido' }, { status: 400 })
   }
 
-  const { data, error } = await supabase
-    .from('bookings')
-    .update({ status })
-    .eq('id', id)
-    .select()
-    .single()
+  const { data, error } = await updateBookingStatusRecord(supabase, id, status)
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
@@ -43,8 +37,7 @@ export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const { supabase, user, isAdmin } = await getAuthenticatedContext()
 
   if (!user) {
     return NextResponse.json({ error: 'Nao autorizado' }, { status: 401 })
@@ -52,17 +45,7 @@ export async function DELETE(
 
   const { id } = await params
 
-  // Admin can delete any booking; regular users can only delete their own
-  let query = supabase
-    .from('bookings')
-    .delete()
-    .eq('id', id)
-
-  if (user.email !== ADMIN_EMAIL) {
-    query = query.eq('user_id', user.id)
-  }
-
-  const { error } = await query
+  const { error } = await deleteBookingRecord(supabase, id, isAdmin ? undefined : user.id)
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })

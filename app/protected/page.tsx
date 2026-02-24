@@ -12,7 +12,6 @@ export default async function ProtectedPage() {
 
   return (
     <BookingDashboard
-      userId={user.id}
       userEmail={user.email || ''}
     />
   )

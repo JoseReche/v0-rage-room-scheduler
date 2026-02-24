@@ -21,13 +21,13 @@ import {
   ShieldCheck,
 } from 'lucide-react'
 import { toast } from 'sonner'
-import { ADMIN_EMAIL, STATUS_LABELS, PAYMENT_TYPE_LABELS } from '@/lib/constants'
+import { ADMIN_EMAIL, STATUS_LABELS, PAYMENT_TYPE_LABELS, TIME_SLOT_LABELS, type TimeSlot } from '@/lib/constants'
 
 type Booking = {
   id: string
   user_id: string
   booking_date: string
-  time_slot: 'morning' | 'afternoon'
+  time_slot: TimeSlot
   customer_name: string
   customer_phone: string | null
   notes: string | null
@@ -302,7 +302,7 @@ function BookingCard({
             {format(new Date(booking.booking_date), "d 'de' MMMM 'de' yyyy", { locale: ptBR })}
           </Badge>
           <Badge variant="outline" className="text-xs shrink-0">
-            {booking.time_slot === 'morning' ? 'Manha' : 'Tarde'}
+            {TIME_SLOT_LABELS[booking.time_slot]}
           </Badge>
           <Badge
             variant={booking.payment_type === 'paid' ? 'default' : 'secondary'}
