@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+
 import {
   format,
   startOfMonth,
@@ -61,32 +61,32 @@ export function BookingCalendar({
   const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab']
 
   return (
-    <div>
+    <div className="rounded-xl border border-primary/20 bg-gradient-to-b from-card to-card/80 p-4">
       <div className="mb-6 flex items-center justify-between">
         <Button
           variant="ghost"
           size="icon"
           onClick={() => onMonthChange(subMonths(currentMonth, 1))}
-          className="text-muted-foreground hover:text-foreground hover:bg-secondary"
+          className="text-primary/80 hover:text-primary hover:bg-primary/10"
         >
           <ChevronLeft className="h-5 w-5" />
           <span className="sr-only">Mes anterior</span>
         </Button>
-        <h2 className="text-lg font-bold uppercase tracking-wider text-foreground">
+        <h2 className="text-lg font-black uppercase tracking-widest text-foreground">
           {format(currentMonth, 'MMMM yyyy', { locale: ptBR })}
         </h2>
         <Button
           variant="ghost"
           size="icon"
           onClick={() => onMonthChange(addMonths(currentMonth, 1))}
-          className="text-muted-foreground hover:text-foreground hover:bg-secondary"
+          className="text-primary/80 hover:text-primary hover:bg-primary/10"
         >
           <ChevronRight className="h-5 w-5" />
           <span className="sr-only">Proximo mes</span>
         </Button>
       </div>
 
-      <div className="grid grid-cols-7 gap-1">
+      <div className="grid grid-cols-7 gap-1 rounded-lg bg-background/60 p-2">
         {weekDays.map((day) => (
           <div
             key={day}
@@ -113,8 +113,8 @@ export function BookingCalendar({
                 ${!isCurrentMonth ? 'text-muted-foreground/30' : ''}
                 ${isPast && isCurrentMonth ? 'text-muted-foreground/50 cursor-not-allowed' : ''}
                 ${isSelected ? 'bg-primary text-primary-foreground' : ''}
-                ${!isSelected && isCurrentMonth && !isPast ? 'hover:bg-secondary text-foreground cursor-pointer' : ''}
-                ${isToday(day) && !isSelected ? 'ring-1 ring-primary' : ''}
+                ${!isSelected && isCurrentMonth && !isPast ? 'hover:bg-primary/15 text-foreground cursor-pointer' : ''}
+                ${isToday(day) && !isSelected ? 'ring-1 ring-primary ring-offset-1 ring-offset-background' : ''}
               `}
             >
               <span className="font-semibold">{format(day, 'd')}</span>
@@ -138,7 +138,7 @@ export function BookingCalendar({
         })}
       </div>
 
-      <div className="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
+      <div className="mt-4 flex items-center gap-4 text-xs font-medium text-muted-foreground">
         <div className="flex items-center gap-1.5">
           <span className="h-2 w-2 rounded-full bg-primary" />
           <span>Agendado</span>

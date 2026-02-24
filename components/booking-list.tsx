@@ -2,7 +2,7 @@
 
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { Trash2, User, Phone, Clock, FileText, CheckCircle2, XCircle, DollarSign, Gift, ShieldCheck } from 'lucide-react'
+import { User, Phone, Clock, FileText, CheckCircle2, XCircle, DollarSign, Gift } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
@@ -25,42 +25,22 @@ type Booking = {
 type BookingListProps = {
   bookings: Booking[]
   selectedDate: Date
-  currentUserId: string
   currentUserEmail: string
-  onBookingDeleted: () => void
+  onBookingsUpdated: () => void
 }
 
 export function BookingList({
   bookings,
   selectedDate,
-  currentUserId,
   currentUserEmail,
-  onBookingDeleted,
+  onBookingsUpdated,
 }: BookingListProps) {
-  const [deletingId, setDeletingId] = useState<string | null>(null)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
   const isAdmin = currentUserEmail === ADMIN_EMAIL
 
   const dateBookings = bookings.filter(
     (b) => b.booking_date === format(selectedDate, 'yyyy-MM-dd')
   )
-
-  const handleDelete = async (id: string) => {
-    setDeletingId(id)
-    try {
-      const res = await fetch(`/api/bookings/${id}`, { method: 'DELETE' })
-      if (!res.ok) {
-        const err = await res.json()
-        throw new Error(err.error || 'Erro ao deletar')
-      }
-      toast.success('Agendamento removido!')
-      onBookingDeleted()
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Erro ao deletar')
-    } finally {
-      setDeletingId(null)
-    }
-  }
 
   const handleUpdateStatus = async (id: string, status: 'approved' | 'rejected') => {
     setUpdatingId(id)
@@ -75,7 +55,7 @@ export function BookingList({
         throw new Error(err.error || 'Erro ao atualizar')
       }
       toast.success(status === 'approved' ? 'Agendamento aprovado!' : 'Agendamento rejeitado.')
-      onBookingDeleted()
+      onBookingsUpdated()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Erro ao atualizar')
     } finally {
@@ -204,18 +184,6 @@ export function BookingList({
                         Rejeitar
                       </Button>
                     </>
-                  )}
-
-                  {(booking.user_id === currentUserId || isAdmin) && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDelete(booking.id)}
-                      disabled={deletingId === booking.id}
-                      className="h-8 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </Button>
                   )}
                 </div>
               </div>

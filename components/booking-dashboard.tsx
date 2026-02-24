@@ -6,7 +6,7 @@ import useSWR from 'swr'
 import { BookingCalendar } from '@/components/booking-calendar'
 import { BookingForm } from '@/components/booking-form'
 import { BookingList } from '@/components/booking-list'
-import { Hammer, LogOut, CalendarDays, ShieldCheck } from 'lucide-react'
+import { Hammer, LogOut, ShieldCheck, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
@@ -29,11 +29,10 @@ type Booking = {
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 type BookingDashboardProps = {
-  userId: string
   userEmail: string
 }
 
-export function BookingDashboard({ userId, userEmail }: BookingDashboardProps) {
+export function BookingDashboard({ userEmail }: BookingDashboardProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const router = useRouter()
@@ -64,12 +63,12 @@ export function BookingDashboard({ userId, userEmail }: BookingDashboardProps) {
     : []
 
   return (
-    <div className="min-h-svh bg-background">
+    <div className="min-h-svh bg-gradient-to-b from-background via-background to-secondary/20">
       {/* Header */}
-      <header className="border-b border-border bg-card">
+      <header className="border-b border-border bg-card/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 md:px-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-primary bg-primary/10">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-primary/80 bg-primary/20 shadow-[0_0_20px_rgba(255,80,0,0.25)]">
               <Hammer className="h-5 w-5 text-primary" />
             </div>
             <div>
@@ -90,7 +89,7 @@ export function BookingDashboard({ userId, userEmail }: BookingDashboardProps) {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="text-muted-foreground hover:text-foreground"
+                  className="border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary"
                 >
                   <ShieldCheck className="mr-2 h-4 w-4" />
                   Painel Admin
@@ -115,7 +114,7 @@ export function BookingDashboard({ userId, userEmail }: BookingDashboardProps) {
         <div className="grid gap-6 lg:grid-cols-5">
           {/* Calendar */}
           <div className="lg:col-span-3">
-            <div className="rounded-lg border border-border bg-card p-4 md:p-6">
+            <div className="rounded-2xl border border-primary/20 bg-card/90 p-4 shadow-xl shadow-primary/5 md:p-6">
               <BookingCalendar
                 bookings={bookings}
                 selectedDate={selectedDate}
@@ -131,7 +130,7 @@ export function BookingDashboard({ userId, userEmail }: BookingDashboardProps) {
             {selectedDate ? (
               <>
                 {/* Booking Form */}
-                <div className="rounded-lg border border-border bg-card p-4 md:p-6">
+                <div className="rounded-2xl border border-border/70 bg-card/90 p-4 md:p-6">
                   <BookingForm
                     selectedDate={selectedDate}
                     existingBookings={selectedDateBookings}
@@ -140,19 +139,18 @@ export function BookingDashboard({ userId, userEmail }: BookingDashboardProps) {
                 </div>
 
                 {/* Booking List for selected day */}
-                <div className="rounded-lg border border-border bg-card p-4 md:p-6">
+                <div className="rounded-2xl border border-border/70 bg-card/90 p-4 md:p-6">
                   <BookingList
                     bookings={bookings}
                     selectedDate={selectedDate}
-                    currentUserId={userId}
                     currentUserEmail={userEmail}
-                    onBookingDeleted={handleBookingChange}
+                    onBookingsUpdated={handleBookingChange}
                   />
                 </div>
               </>
             ) : (
-              <div className="flex flex-col items-center justify-center rounded-lg border border-border bg-card p-8 text-center">
-                <CalendarDays className="mb-3 h-10 w-10 text-muted-foreground/50" />
+              <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-primary/30 bg-card/80 p-8 text-center">
+                <Sparkles className="mb-3 h-10 w-10 text-primary/70" />
                 <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                   Selecione um dia
                 </p>
