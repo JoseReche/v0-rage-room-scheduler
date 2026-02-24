@@ -3,6 +3,9 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { Shield, HardHat, Cctv, FileCheck2, ArrowRight, Building2 } from 'lucide-react'
+
+import { Hammer, CalendarDays, ArrowRight } from 'lucide-react'
+
 import { Button } from '@/components/ui/button'
 
 type LandingInfo = {
@@ -19,6 +22,11 @@ const fallbackInfo: LandingInfo = {
     'Nao e sobre quebrar objetos. E sobre liberar o que voce carrega.',
   description:
     'Explosao controlada de emocoes, com seguranca, estrutura profissional e atmosfera industrial.',
+
+    'Uma Sala da Raiva (Rage Room) e um ambiente controlado onde voce descarrega o estresse quebrando objetos com seguranca, equipamentos de protecao e orientacao.',
+  description:
+    'Experiencia intensa, divertida e segura para aliviar tensoes do dia a dia.',
+
   price_per_item: 25,
   price_per_day: 150,
 }
@@ -49,6 +57,8 @@ export default function Home() {
         })
       } catch {
         // fallback content
+
+        // keep fallback content
       }
     }
 
@@ -177,6 +187,54 @@ export default function Home() {
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </Link>
+      </section>
+    <main className="min-h-screen bg-background">
+      <section className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mb-8 flex items-center gap-3">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-primary bg-primary/10">
+            <Hammer className="h-6 w-6 text-primary" />
+          </div>
+          <h1 className="text-3xl font-black uppercase tracking-tighter text-foreground md:text-5xl">
+            {room.title}
+          </h1>
+        </div>
+
+        <div className="rounded-xl border border-border bg-card p-6 md:p-8">
+          <h2 className="text-xl font-bold uppercase tracking-wider text-primary">O que e uma Sala da Raiva?</h2>
+          <p className="mt-3 text-base leading-relaxed text-foreground">{room.about_text}</p>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{room.description}</p>
+
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-lg border border-border bg-primary/10 p-5">
+              <p className="text-xs uppercase tracking-widest text-muted-foreground">Valor por item</p>
+              <p className="mt-2 text-3xl font-black text-primary">R$ {room.price_per_item.toFixed(2)}</p>
+            </div>
+            <div className="rounded-lg border border-border bg-primary/10 p-5">
+              <p className="text-xs uppercase tracking-widest text-muted-foreground">Valor por dia</p>
+              <p className="mt-2 text-3xl font-black text-primary">R$ {room.price_per_day.toFixed(2)}</p>
+            </div>
+          </div>
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link href="/auth/login">
+              <Button className="gap-2 font-bold uppercase">
+                Entrar para Agendar
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Link href="/auth/sign-up">
+              <Button variant="outline" className="gap-2 font-bold uppercase">
+                Criar Conta
+              </Button>
+            </Link>
+            <Link href="/room">
+              <Button variant="ghost" className="gap-2 font-bold uppercase text-muted-foreground">
+                <CalendarDays className="h-4 w-4" />
+                Ver Sala
+              </Button>
+            </Link>
+          </div>
+        </div>
       </section>
     </main>
   )
