@@ -89,46 +89,72 @@
   }
 }
 
-/* Landing industrial styles */
 .industrial-bg {
   background:
-    radial-gradient(circle at 80% 15%, rgba(255, 94, 0, 0.15), transparent 35%),
-    radial-gradient(circle at 10% 90%, rgba(255, 94, 0, 0.08), transparent 30%),
-    linear-gradient(180deg, #111111 0%, #141414 45%, #101010 100%);
+    radial-gradient(circle at 78% 15%, rgba(212, 90, 26, 0.2), transparent 30%),
+    radial-gradient(circle at 16% 85%, rgba(212, 90, 26, 0.12), transparent 34%),
+    linear-gradient(180deg, #111111 0%, #151515 45%, #0d0d0d 100%);
+}
+
+.hero-impact {
+  background-image:
+    linear-gradient(180deg, rgba(9, 9, 9, 0.35), rgba(9, 9, 9, 0.88)),
+    repeating-linear-gradient(
+      110deg,
+      rgba(255, 255, 255, 0.02) 0px,
+      rgba(255, 255, 255, 0.02) 2px,
+      transparent 2px,
+      transparent 12px
+    );
+}
+
+.crack-overlay {
+  opacity: 0.7;
+  background:
+    radial-gradient(circle at 15% 30%, rgba(255, 255, 255, 0.04), transparent 30%),
+    radial-gradient(circle at 85% 70%, rgba(255, 255, 255, 0.03), transparent 30%),
+    linear-gradient(135deg, transparent 20%, rgba(255, 255, 255, 0.05) 20.8%, transparent 22%),
+    linear-gradient(40deg, transparent 72%, rgba(255, 255, 255, 0.04) 72.8%, transparent 74%);
 }
 
 .industrial-title {
   font-weight: 900;
   letter-spacing: -0.04em;
   text-transform: uppercase;
-  color: #f2eee7;
-  text-shadow: 0 0 1px rgba(255, 255, 255, 0.25), 0 3px 20px rgba(0, 0, 0, 0.5);
+  color: #f0ece5;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.08), 0 16px 28px rgba(0, 0, 0, 0.65);
 }
 
 .industrial-panel {
   background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.22)),
     repeating-linear-gradient(
       135deg,
       rgba(255, 255, 255, 0.02) 0px,
       rgba(255, 255, 255, 0.02) 3px,
       transparent 3px,
-      transparent 10px
+      transparent 12px
     ),
-    linear-gradient(145deg, #161616 0%, #121212 65%, #1a1a1a 100%);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03), 0 20px 40px rgba(0, 0, 0, 0.45);
+    linear-gradient(145deg, #171717 0%, #121212 65%, #1c1c1c 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03), 0 20px 36px rgba(0, 0, 0, 0.5);
 }
 
 .concrete-strip {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.12)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0.2)),
     repeating-linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0.02) 0px,
-      rgba(255, 255, 255, 0.02) 2px,
+      95deg,
+      rgba(255, 255, 255, 0.025) 0px,
+      rgba(255, 255, 255, 0.025) 2px,
       transparent 2px,
       transparent 14px
     ),
     #1a1a1a;
+}
+
+.metal-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 90, 26, 0.5), transparent);
 }
 
 .industrial-btn {
@@ -136,8 +162,4 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-}
-
-.industrial-glow {
-  background: linear-gradient(120deg, transparent 0%, rgba(255, 94, 0, 0.08) 35%, transparent 70%);
 }
